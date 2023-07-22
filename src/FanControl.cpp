@@ -37,7 +37,15 @@ void FanControl::Begin(uint8_t pin)
 
 void FanControl::SetFanSpeed(int speed) {
 #if defined(ESP32)
-    ledcWrite(this->channel, speed);
+    
+    int t_speed = speed;
+    if (t_speed > 180) {
+        t_speed = 180;
+    }
+
+    int mapped = map(t_speed, 0, 180, 0, 255);
+
+    ledcWrite(this->channel, mapped);
 #else
 
     float speedInPercent = float(map(speed, 0, 255, 0, 100)) / 100;
